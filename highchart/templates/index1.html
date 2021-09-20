@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<!-- 
+        https://jsfiddle.net/65tdfsL8/
+       
+        
+    -->
+
+<head>
+    <title>Finland</title>
+
+
+    <style>
+            #container {
+            height: 400px; 
+            min-width: 310px; 
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+
+    <div id="container"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+
+    <!-- Custom script comes here-->
+    <script>
+
+    $( document ).ready(function() {
+            // console.log( "ready!" );
+
+            get_data();
+    });
+
+    function get_data(){
+
+        url = "/api/data"
+
+        var myusername = $("#username").val();
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: myusername,
+            cache: false,
+            success: function(data){
+                // $("#resultarea").text(data);
+                console.log(data);
+
+                plot_chart(data);
+            }
+        });
+    } //- get data
+
+
+    function plot_chart(data){
+
+      // Create the chart
+Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Finland Lakes'
+    },
+    subtitle: {
+        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+    },
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Total Area in square kilometer'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:.1f}'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    series: [
+        {
+            name: "lakes",
+            colorByPoint: true,
+            data: data['data_list']
+        }
+    ],
+    
+});
+
+        }
+</script>
+
+</body>
+
+</html>
